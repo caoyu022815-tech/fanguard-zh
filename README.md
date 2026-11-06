@@ -158,6 +158,8 @@ node tools/update.mjs --fetch-cards
 
 ## 启用自动更新发布
 
+每个发布版本的改动见[更新记录](CHANGELOG.md)。
+
 本地导入的脚本仍可照常使用。推送到 GitHub 公开仓库后，工作流会自动使用默认分支的脚本地址，例如
 `https://raw.githubusercontent.com/OWNER/REPO/main/dist/fanguard-zh.user.js`。
 需要确保仓库允许工作流提交到默认分支，并且该地址对脚本使用者可读。

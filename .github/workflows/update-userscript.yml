@@ -37,8 +37,9 @@ jobs:
           npm version patch --no-git-tag-version
           node tools/build.mjs
           node --check "$script"
+          node tools/compare-userscripts.mjs "$previous" "$script" CHANGELOG.md
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add package.json "$script"
+          git add package.json "$script" CHANGELOG.md
           git commit -m 'Update FANGUARD userscript'
           git push origin "HEAD:$GITHUB_REF_NAME"

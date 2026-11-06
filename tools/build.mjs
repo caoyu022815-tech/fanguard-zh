@@ -28,6 +28,8 @@ const byId = new Set(cards.map((card) => card.id));
 
 // Auto translations from vgcard.yimieji.com (tools/build-card-translations.mjs).
 const translations = {};
+const fallbackFile = path.join(dataDir, 'card-translation-fallbacks.json');
+if (fs.existsSync(fallbackFile)) Object.assign(translations, JSON.parse(fs.readFileSync(fallbackFile, 'utf8')));
 const autoFile = path.join(dataDir, 'translations.json');
 if (fs.existsSync(autoFile)) Object.assign(translations, JSON.parse(fs.readFileSync(autoFile, 'utf8')));
 
