@@ -89,6 +89,19 @@ for (const card of cards) {
   translations[card.id] = [applyTerms(name), text === null ? null : applyTerms(text)];
 }
 
+// Keep exact-ID translations for cards the game may add between releases.
+// A missing source effect must preserve the game's original text.
+const gameIds = new Set(cards.map(card => normalize(card.id)));
+let extra = 0;
+for (const card of api) {
+  const id = String(card.serial ?? '').trim().toUpperCase();
+  const name = String(card.scName ?? '').trim();
+  if (!/^D(?:Z)?-[A-Z0-9]+\/[A-Z0-9]+$/.test(id) || !name || gameIds.has(normalize(id)) || Object.hasOwn(translations, id)) continue;
+  const text = cleanText(card.effect);
+  translations[id] = [applyTerms(name), text ? applyTerms(text) : null];
+  extra++;
+}
+
 const sorted = {};
 for (const id of Object.keys(translations).sort()) sorted[id] = translations[id];
 
@@ -97,7 +110,8 @@ fs.writeFileSync(path.join(root, 'data/translations.json'), JSON.stringify(sorte
 fs.writeFileSync(path.join(root, 'build/unmatched-cards.json'), JSON.stringify(unmatched, null, 1), 'utf8');
 
 const total = cards.length;
-const coverage = ((Object.keys(sorted).length / total) * 100).toFixed(1);
+const coverage = (((total - unmatched.length) / total) * 100).toFixed(1);
 console.log(`卡片 ${total} 张：卡号匹配 ${matchedById}，日文名匹配 ${matchedByName}，未匹配 ${unmatched.length}（覆盖 ${coverage}%）`);
-console.log(`卡文：中文 ${Object.values(sorted).filter((e) => e[1]).length} 张，明确无效果 ${blankText} 张，保留原文 ${emptyText} 张`);
+console.log(`游戏卡表卡文：中文 ${cards.filter(card => sorted[card.id]?.[1]).length} 张，明确无效果 ${blankText} 张，保留原文 ${emptyText} 张`);
+console.log(`另收录 ${extra} 条可按卡号匹配的 D 标准卡译文`);
 if (unmatched.length) console.log(`未匹配示例: ${unmatched.slice(0, 8).map((c) => c.id).join(' / ')}`);

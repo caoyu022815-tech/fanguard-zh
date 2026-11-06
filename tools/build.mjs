@@ -284,8 +284,9 @@ const script = template
 fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, script, 'utf8');
 
-const coverage = ((Object.keys(entries).length / cards.length) * 100).toFixed(1);
-console.log(`卡片 ${cards.length} 张，译名 ${Object.keys(entries).length} 条（${coverage}%），卡文 ${build.texts} 条`);
+const matched = cards.filter(card => entries[card.id]?.[0]).length;
+const coverage = ((matched / cards.length) * 100).toFixed(1);
+console.log(`游戏卡表 ${cards.length} 张，匹配译名 ${matched} 条（${coverage}%）；打包译名 ${build.names} 条、卡文 ${build.texts} 条`);
 if (manual) console.log(`手工译名表 ${input} 覆盖 ${manual} 条`);
 console.log(`界面词条 ${uiEntries.length} 条${koEntries ? `（韩文参考词典 ${koEntries} 条）` : ''}`);
 console.log(`明文 ${(payload.length / 1024 / 1024).toFixed(2)} MB → 压缩后脚本 ${(script.length / 1024 / 1024).toFixed(2)} MB`);
