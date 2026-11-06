@@ -1,0 +1,7 @@
+/tampermonkey_stable.crx
+/build/live-page.html
+/build/yimieji-cards.json
+/build/*-cache.json
+/node_modules/
+/.env
+/.env.*

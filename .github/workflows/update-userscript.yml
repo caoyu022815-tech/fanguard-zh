@@ -1,0 +1,44 @@
+name: Update FANGUARD userscript
+
+on:
+  schedule:
+    - cron: '23 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fanguard-userscript-release
+
+jobs:
+  update:
+    if: github.ref_name == github.event.repository.default_branch && !github.event.repository.private
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      FANGUARD_UPDATE_URL: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/dist/fanguard-zh.user.js
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Refresh translations and publish if changed
+        shell: bash
+        run: |
+          script=dist/fanguard-zh.user.js
+          previous="$RUNNER_TEMP/fanguard-previous.user.js"
+          cp "$script" "$previous"
+          node tools/update.mjs --fetch-cards
+          result=$(node tools/compare-userscripts.mjs "$previous" "$script")
+          if [[ "$result" == unchanged ]]; then
+            exit 0
+          fi
+          npm version patch --no-git-tag-version
+          node tools/build.mjs
+          node --check "$script"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json "$script"
+          git commit -m 'Update FANGUARD userscript'
+          git push origin "HEAD:$GITHUB_REF_NAME"

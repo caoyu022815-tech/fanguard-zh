@@ -213,4 +213,3 @@ node tools/build.mjs
 - 卡名/卡文数据：[THE一灭寂 · 先导者卡牌资料站](https://vgcard.yimieji.com/)
 - 界面韩→中词典：[FANGUARD中文汉化包 v3.2 (2026-11-02)](https://fanguard-d.pages.dev/)（已按本项目术语归一）
 - 游戏本体：FANGUARD · D Fight Simulator
-

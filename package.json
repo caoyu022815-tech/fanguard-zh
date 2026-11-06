@@ -1,0 +1,16 @@
+{
+  "name": "fanguard-zh",
+  "version": "1.6.2",
+  "private": true,
+  "description": "FANGUARD · D Fight Simulator 简体中文汉化 userscript（卡牌数据来自 THE一灭寂）",
+  "type": "module",
+  "scripts": {
+    "fetch-cards": "node tools/fetch-yimieji.mjs",
+    "extract": "node tools/extract-cards.mjs",
+    "build:cards": "node tools/build-card-translations.mjs",
+    "build:meta": "node tools/build-meta.mjs",
+    "build": "node tools/build.mjs",
+    "update": "node tools/update.mjs",
+    "import:ui": "node tools/import-ui-ko.mjs"
+  }
+}
