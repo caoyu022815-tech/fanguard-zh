@@ -150,7 +150,10 @@
     let matched = 0;
     for (const card of list) {
       if (!card || typeof card !== 'object') continue;
-      const entry = data.cards[card.id];
+      const id = String(card.id ?? '').trim().normalize('NFKC').toUpperCase();
+      const japaneseName = String(card.name?.ja ?? '').normalize('NFKC').replace(/\s+/g, '');
+      const nameId = Object.hasOwn(data.japaneseIds ?? {}, japaneseName) ? data.japaneseIds[japaneseName] : null;
+      const entry = data.cards[card.id] || data.cards[id] || (nameId ? data.cards[nameId] : null);
       if (entry) {
         if (entry[0]) {
           if (!card.name) card.name = {};

@@ -263,7 +263,9 @@ const build = {
   source: 'THE一灭寂 vgcard.yimieji.com',
 };
 
-const payload = JSON.stringify({ cards: entries, names, ui: uiEntries, meta, build });
+const japaneseIdsFile = path.join(dataDir, 'japanese-card-ids.json');
+const japaneseIds = fs.existsSync(japaneseIdsFile) ? JSON.parse(fs.readFileSync(japaneseIdsFile, 'utf8')) : {};
+const payload = JSON.stringify({ cards: entries, japaneseIds, names, ui: uiEntries, meta, build });
 const packed = zlib.gzipSync(Buffer.from(payload), { level: 9 }).toString('base64');
 
 const updateUrl = process.env.FANGUARD_UPDATE_URL?.trim();

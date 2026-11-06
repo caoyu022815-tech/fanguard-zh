@@ -107,6 +107,21 @@ for (const id of Object.keys(translations).sort()) sorted[id] = translations[id]
 
 fs.mkdirSync(path.join(root, 'data'), { recursive: true });
 fs.writeFileSync(path.join(root, 'data/translations.json'), JSON.stringify(sorted, null, 1), 'utf8');
+const japaneseIds = new Map();
+for (const card of api) {
+  const id = String(card.serial ?? '').trim().toUpperCase();
+  const key = String(card.japName ?? '').normalize('NFKC').replace(/\s+/g, '');
+  const entry = sorted[id];
+  if (!key || !entry?.[0]) continue;
+  if (!japaneseIds.has(key)) {
+    japaneseIds.set(key, id);
+  } else {
+    const previous = sorted[japaneseIds.get(key)];
+    if (previous?.[0] !== entry[0] || previous?.[1] !== entry[1]) japaneseIds.set(key, null);
+  }
+}
+const aliasesByName = Object.fromEntries([...japaneseIds].filter(([, id]) => id).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0));
+fs.writeFileSync(path.join(root, 'data/japanese-card-ids.json'), JSON.stringify(aliasesByName) + '\n', 'utf8');
 fs.writeFileSync(path.join(root, 'build/unmatched-cards.json'), JSON.stringify(unmatched, null, 1), 'utf8');
 
 const total = cards.length;
