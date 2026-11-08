@@ -1,6 +1,6 @@
 {
   "name": "fanguard-zh",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "private": true,
   "description": "FANGUARD · D Fight Simulator 简体中文汉化 userscript（卡牌数据来自 THE一灭寂）",
   "type": "module",
